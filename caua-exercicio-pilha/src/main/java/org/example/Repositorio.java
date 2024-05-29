@@ -1,4 +1,5 @@
 package org.example;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -6,12 +7,13 @@ public class Repositorio {
 
     private List<Eletronico> lista;
     private PilhaObj<Integer> pilha;
-
+    private FilaObj<Eletronico> fila;
     private int id;
 
     public Repositorio() {
         this.lista = new ArrayList<>();
         this.pilha = new PilhaObj<>(10);
+        this.fila = new FilaObj<>(10);
         this.id = 100;
     }
 
@@ -45,6 +47,7 @@ public class Repositorio {
             }
         }
         pilha.exibe();
+        fila.exibe();
     }
 
     public void desfazer() {
@@ -53,6 +56,31 @@ public class Repositorio {
         } else {
             int id = pilha.pop();
             deletar(id);
+        }
+    }
+
+    public void agendarSalvar(Eletronico eletronico) {
+        if (fila.isFull()) {
+            System.out.println("Fila de agendamento cheia!");
+        } else {
+            fila.insert(eletronico);
+            System.out.println("Eletrônico agendado para salvar posteriormente: " + eletronico);
+        }
+    }
+
+    public void executarAgendado(int qtdOperacoes) {
+        if (fila.isEmpty()) {
+            System.out.println("Não há operações agendadas");
+        } else if (qtdOperacoes <= 0 || qtdOperacoes > fila.getTamanho()) {
+            System.out.println("Quantidade inválida");
+        } else {
+            for (int i = 0; i < qtdOperacoes; i++) {
+                Eletronico eletronico = fila.poll();
+                if (eletronico != null) {
+                    salvar(eletronico);
+                    System.out.println("Eletrônico salvo: " + eletronico);
+                }
+            }
         }
     }
 }
